@@ -16,7 +16,7 @@ const Login = () => {
                                 <LoginForm/>
                                 <div className="card">
                                     <div className="card-body">
-                                        Haz olvidado tu <a href="/">contraseña?</a>
+                                        Haz olvidado tu <a href="/#/recovered_password"><strong>contraseña?</strong></a>
                                     </div>
                                 </div>
                             </div>
