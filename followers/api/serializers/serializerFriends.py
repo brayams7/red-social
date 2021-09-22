@@ -10,20 +10,7 @@ class ListFriendsSerializers(serializers.Serializer):
             'id':instance[0],
             'username':instance[1]
         }
-
 class ListFollowersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Followed
-        fields = ['profile']
-    
-    def to_representation(self, instance):
-        print(instance)
-        return{
-            'id':instance.profile.id,
-            'username':instance.profile.user.username
-        }
-
-class ListFollowedSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','username']
@@ -32,4 +19,16 @@ class ListFollowedSerializer(serializers.ModelSerializer):
         return{
             'id':instance[0],
             'username':instance[1]
+        }
+
+class ListFollowedSerializer(serializers.ModelSerializer):
+    #agregué solo el campo perfil para saber la identidad del que sigo
+    class Meta:
+        model = Followed
+        fields = ['profile']
+    
+    def to_representation(self, instance):
+        return{
+            'id':instance.profile.id,
+            'username':instance.profile.user.username
         }
