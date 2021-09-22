@@ -19,12 +19,13 @@ const Profile = ({title}) => {
             setLoding(true)
             let res = await postAttachments(url,{body:data})
             if(!res.err){
-                console.log(res)
+                setLoding(false)
                 history.push("/dashboard")
             }else{
                 setErrors(res)
+                setLoding(false)
             }
-            setLoding(false)
+            
         }
         makeFetch()
     }

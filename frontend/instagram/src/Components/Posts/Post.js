@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 
 const validationErrors = (form) =>{
     const errors = {}
-    let regexDescription = /^.{1,250}$/;
+    let regexDescription = /^.{1,250}/;
     
     if(!form.photo){
         errors.photo = "Agrega una foto"
@@ -16,8 +16,12 @@ const validationErrors = (form) =>{
 
     if(!form.description.trim()){
         errors.description = "el campo es requerido"
-    }else if(!regexDescription.test(form.description)){
-        errors.description = "El numero limite de letras es 1000"
+
+    }
+    
+    if(!regexDescription.test(form.description)){
+        console.log(form.description.length)
+        errors.description = "El numero limite de letras es 250"
     }
 
     return errors
@@ -56,6 +60,7 @@ const Post = () => {
             setLoading(true)
             let res = await postAttachments(url,{body:f})
             if(!res.err){
+                setLoading(true)
                 history.push("/dashboard")
             }else{
                 setLoading(false)

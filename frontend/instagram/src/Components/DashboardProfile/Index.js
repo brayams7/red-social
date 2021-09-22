@@ -32,10 +32,8 @@ const Index = (props) => {
                 if(!responsePosts.err){
                     setErrors(null)
                     setPosts(responsePosts)
-                    console.log(responsePosts)
                     setLoading(false)
                 }else if(responsePosts?.status === 404){
-                    console.log('no existe el usuario-- posts')
                     history.push('/NotFound')
                 }
                 
