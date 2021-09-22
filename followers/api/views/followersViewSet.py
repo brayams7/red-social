@@ -10,25 +10,27 @@ from followers.api.serializers.serializerFriends import ListFriendsSerializers, 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView
 
+#listado de mis seguidores
 class ListFollowersApiView(ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated,]
     filter_backends = [DjangoFilterBackend]
-    #filterset_fields = ['user__username']
+    #filterset_fields = ['username','id']
     filterset_fields={
-        'user__username':['contains'],
+        'username':['contains'],
     }
 
-
     def get_queryset(self):
-        return Followed.objects.filter(state = True)
+        return User.objects.filter(is_active = True)
 
     def get_serializer_class(self):
-        return ListFollowersApiView
+        return ListFollowersSerializer
 
     def list(self, request):
         #devuelve mis amigos (que yo los siga y que ellos me sigan)
-        friends = request.user.followed_user.filter(state=True)
+        profile = request.user.user_profile
+        friends = profile.followers.filter(is_active = True).values_list('user_profile__id','username')
+    
         queryset = self.filter_queryset(friends)
 
         page = self.paginate_queryset(queryset)
@@ -43,21 +45,20 @@ class ListFollowedAPiView(ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated,]
     filter_backends = [DjangoFilterBackend]
-    #filterset_fields = ['username']
+    #filterset_fields = ['profile__user__username']
     filterset_fields = {
-        'username':['contains'],
+        'profile__user__username':['contains'],
     }
     def get_queryset(self):
-        return User.objects.filter(state = True)
+        return Followed.objects.filter(state = True)
 
     def get_serializer_class(self):
         return ListFollowedSerializer
 
     def list(self, request):
         #devuelve mis amigos (que yo los siga y que ellos me sigan)
-        profile = request.user.user_profile
 
-        friends = profile.followers.filter(is_active = True).values_list('user_profile__id','username')
+        friends = request.user.followed_user.filter(state=True)
         queryset = self.filter_queryset(friends)
 
         page = self.paginate_queryset(queryset)
@@ -67,6 +68,9 @@ class ListFollowedAPiView(ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+
 
 class FollowersViewSet(ModelViewSet):
     authentication_classes = [TokenAuthentication]
@@ -79,7 +83,7 @@ class FollowersViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         return ListFriendsSerializers
-
+    '''
     @action(methods=['get'], detail = False)
     def listFollowers(self, request):
         #devuelve mis amigos (que yo los siga y que ellos me sigan)
@@ -109,3 +113,4 @@ class FollowersViewSet(ModelViewSet):
 
         serializer = ListFollowedSerializer(queryset, many=True)
         return Response(serializer.data)
+    '''
